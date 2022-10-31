@@ -1,0 +1,229 @@
+package com.IppoStore.VerifyMobileNumber;
+
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
+import java.util.logging.LogManager;
+
+import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
+import org.json.JSONObject;
+import org.json.JSONTokener;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
+import com.IppoStore.Baseclass.Driver;
+import com.IppoStore.Listeners.TestListener;
+import com.IppoStore.pageObject.VerifyMobileNumber_PageObjects;
+import com.IppoStore.utils.TestUtils;
+import com.aventstack.extentreports.Status;
+import io.appium.java_client.MobileElement;
+
+public class VerifyMobileNo extends Driver{
+	InputStream datais;
+	JSONObject jsonObject;
+	TestListener tL=new TestListener();
+
+	static Logger log=Logger.getLogger(VerifyMobileNo.class);
+	
+	public void log(String string) {
+		tL.test.log(Status.INFO, string);
+		log.info(string);		
+	}
+	
+	public void waitForVisibility(WebElement e) {
+		  WebDriverWait wait= new WebDriverWait(driver, TestUtils.WAIT);
+		  
+	  }
+	public void click(WebElement e) {
+		waitForVisibility(e);
+		e.click();
+		return;
+	}
+	public void sendKeys(WebElement e, String txt) throws InterruptedException {
+		  waitForVisibility(e);
+		   e.sendKeys(txt);
+		   return;
+		  
+	}
+	public void clear(WebElement e) {
+		// TODO Auto-generated method stub
+		waitForVisibility(e);
+		e.clear();
+		return;
+	}
+	@BeforeClass
+	public void beforeClass() throws Exception {
+		try {
+
+			String dataFileName="data/VerifyMobileNumber.json";
+			datais=getClass().getClassLoader().getResourceAsStream(dataFileName);
+			JSONTokener tokener=new JSONTokener(datais);
+			jsonObject=new JSONObject(tokener);
+		}
+		catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+
+		finally {
+			if(datais!=null) {
+				datais.close();
+			}
+		}
+		PageFactory.initElements(driver, this);
+
+
+
+	}
+	@Test(priority=1)//1.2
+
+
+	public void WithoutPhoneNumber()throws InterruptedException, IOException  {
+		
+		PropertyConfigurator.configure("log4j.properties");
+
+		WebDriverWait wait = new WebDriverWait(driver, 50);
+		PageFactory.initElements(driver, VerifyMobileNumber_PageObjects.class);
+
+		Thread.sleep(7000);
+		wait.until(ExpectedConditions.elementToBeClickable(VerifyMobileNumber_PageObjects.LangSelect));
+		VerifyMobileNumber_PageObjects.LangSelect.click();
+		Thread.sleep(4000); 
+		wait.until(ExpectedConditions.elementToBeClickable(VerifyMobileNumber_PageObjects.ContinueBtn));
+		VerifyMobileNumber_PageObjects.ContinueBtn.click();
+		Thread.sleep(4000);
+		wait.until(ExpectedConditions.elementToBeClickable(VerifyMobileNumber_PageObjects.ContinueBtn1));
+		VerifyMobileNumber_PageObjects.ContinueBtn1.click();
+		Thread.sleep(6000);
+
+		wait.until(ExpectedConditions.elementToBeClickable(By.id("com.ippopay.store:id/mobile_number_et")));
+		MobileElement SendMobileNo= (MobileElement)driver.findElementById("com.ippopay.store:id/mobile_number_et");
+		SendMobileNo.click();
+		
+//		tL.test.log(Status.INFO, "Mobile no is blank");
+//		log.info("Mobile no is blank");
+		
+		log("Mobile no is blank");
+		
+
+
+		wait.until(ExpectedConditions.elementToBeClickable(VerifyMobileNumber_PageObjects.ContinueBtn2));
+		VerifyMobileNumber_PageObjects.ContinueBtn2.click();
+		Thread.sleep(6000);
+
+
+		//	    wait.until(ExpectedConditions.elementToBeClickable(By.id("com.android.permissioncontroller:id/permission_allow_foreground_only_button")));
+		//	    MobileElement GpsWhileUsingApp= (MobileElement) driver.findElementById("com.android.permissioncontroller:id/permission_allow_foreground_only_button");
+		//	    GpsWhileUsingApp.click();
+		//	    Thread.sleep(4000);
+
+		WebDriverWait title = new WebDriverWait(driver,25); 
+		title.until(ExpectedConditions.presenceOfElementLocated(By.id("com.ippopay.store:id/textView15")));
+		MobileElement titleMessage = (MobileElement) driver.findElement((By.id("com.ippopay.store:id/textView15")));
+		String TitleBar = titleMessage.getAttribute("text");
+		log("Title Page is "+TitleBar +"not Verify OTP");
+
+		String ExpTitle="Verify OTP";
+		if(ExpTitle.equalsIgnoreCase(TitleBar)) {
+			tL.test.log(Status.FAIL, "TestCase Failed: "+"OMG"+"\n\uD83D\uDE32"+"\n\uD83D\uDE32"+"......Navigated OTP page Without Phone number.....");
+		}
+		else {
+			tL.test.log(Status.PASS, "TestCase Passed: "+"Enter a valid mobile number pls....");
+		}
+	}
+
+	
+	@Test(priority=2)//1.3
+
+
+	public void WithSpecialChar()throws InterruptedException, IOException  {
+
+		WebDriverWait wait = new WebDriverWait(driver, 50);
+		PageFactory.initElements(driver, VerifyMobileNumber_PageObjects.class);
+
+		Thread.sleep(7000);
+
+		wait.until(ExpectedConditions.elementToBeClickable(VerifyMobileNumber_PageObjects.SendMobileNo));
+		VerifyMobileNumber_PageObjects.SendMobileNo.sendKeys("+.");
+		tL.test.log(Status.INFO, "\"+.\" special characters passed in mobile no tab");
+
+
+		wait.until(ExpectedConditions.elementToBeClickable(VerifyMobileNumber_PageObjects.ContinueBtn2));
+		VerifyMobileNumber_PageObjects.ContinueBtn2.click();
+		Thread.sleep(6000);
+
+		WebDriverWait title = new WebDriverWait(driver,25); 
+		title.until(ExpectedConditions.presenceOfElementLocated(By.id("com.ippopay.store:id/textView15")));
+		MobileElement titleMessage = (MobileElement) driver.findElement((By.id("com.ippopay.store:id/textView15")));
+		String TitleBar = titleMessage.getAttribute("text");
+		TestListener.test.log(Status.INFO, "Title Page is "+TitleBar +"not Verify OTP");
+
+		String ExpTitle="Verify OTP";
+		if(ExpTitle.equalsIgnoreCase(TitleBar)) {
+			tL.test.log(Status.FAIL, "TestCase Failed: "+"OMG"+"\n\uD83D\uDE32"+"\n\uD83D\uDE32"+"......Navigated OTP page Without Phone number.....");
+		}
+		else {
+			tL.test.log(Status.PASS, "TestCase Passed: "+"Enter a valid mobile number pls....");
+		}
+
+
+
+	}
+
+	@Test(priority=3)//1.1
+	// @Test(enabled=false)
+
+	public void WithPhoneNumber()throws InterruptedException, IOException  {
+		
+
+
+			PropertyConfigurator.configure("log4j.properties");
+
+			Properties props=new Properties();
+			InputStream inputStream= new FileInputStream("/Users/apple/git/Tech_Ippopay-qks022-ippopay-store-automation-java-e29b41ccb6f2 2/src/main/resources/config.properties");
+			props.load(inputStream);
+			
+			WebDriverWait wait = new WebDriverWait(driver, 50);
+			PageFactory.initElements(driver, VerifyMobileNumber_PageObjects.class);
+
+
+			Thread.sleep(7000);
+			
+			wait.until(ExpectedConditions.elementToBeClickable(VerifyMobileNumber_PageObjects.SendMobileNo));
+			VerifyMobileNumber_PageObjects.SendMobileNo.clear();
+			VerifyMobileNumber_PageObjects.SendMobileNo.sendKeys(props.getProperty("DefaultNo"));
+
+			wait.until(ExpectedConditions.elementToBeClickable(VerifyMobileNumber_PageObjects.ContinueBtn2));
+		    VerifyMobileNumber_PageObjects.ContinueBtn2.click();
+			Thread.sleep(6000);
+			
+			wait.until(ExpectedConditions.elementToBeClickable(VerifyMobileNumber_PageObjects.GpsWhileUsingApp));
+		    VerifyMobileNumber_PageObjects.GpsWhileUsingApp.click();
+			Thread.sleep(200);
+
+		    wait.until(ExpectedConditions.elementToBeClickable(VerifyMobileNumber_PageObjects.titleMessage));
+			MobileElement titleMessage = (MobileElement) driver.findElement((By.id("com.ippopay.store:id/textView15")));
+			String TitleBar = titleMessage.getAttribute("text");
+			log( TitleBar);
+
+			String ExpTitle="Verify OTP";
+			if(ExpTitle.equalsIgnoreCase(TitleBar)) {
+				tL.test.log(Status.PASS, "TestCase Passed: "+"ooohhoooo!...Navigated OTP page successfully.....");
+
+			}else
+				tL.test.log(Status.FAIL, "TestCase Failed: "+"Can't navigate to the OTP page.");
+
+		
+
+
+
+		
+	}
+}
