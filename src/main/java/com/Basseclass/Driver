@@ -1,0 +1,86 @@
+package com.IppoStore.Baseclass;
+
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.Properties;
+import org.json.JSONObject;
+import org.json.JSONTokener;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.support.PageFactory;
+import org.testng.annotations.AfterTest;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeTest;
+import com.IppoStore.pageObject.BaseTest_PageObjects;
+import io.appium.java_client.AppiumDriver;
+import io.appium.java_client.android.AndroidDriver;
+import io.appium.java_client.remote.MobileCapabilityType;
+
+public class Driver {
+	
+	InputStream datais;
+	protected JSONObject jsonObject;
+	public static AppiumDriver driver;
+	
+	
+	@BeforeClass(alwaysRun = true)
+	public void beforeClass() throws Exception {
+		
+		try {
+			Properties props=new Properties();
+			InputStream inputStream= new FileInputStream("/Users/apple/git/Tech_Ippopay-qks022-ippopay-store-automation-java-e29b41ccb6f2 2/src/main/resources/config.properties");
+			props.load(inputStream);
+			
+			
+		String dataFileName="data/BaseTest.json";
+		datais=getClass().getClassLoader().getResourceAsStream(dataFileName);
+		JSONTokener tokener=new JSONTokener(datais);
+		jsonObject=new JSONObject(tokener);
+		}
+		catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		
+		finally {
+			if(datais!=null) {
+				datais.close();
+			}
+		}
+	}
+	
+	@BeforeTest
+	public void SetDriver() throws IOException {
+	Properties props=new Properties();
+	InputStream inputStream= new FileInputStream("/Users/apple/git/Tech_Ippopay-qks022-ippopay-store-automation-java-e29b41ccb6f2 2/src/main/resources/config.properties");
+	props.load(inputStream);
+
+	PageFactory.initElements(driver, this);
+
+	DesiredCapabilities desiredCapabilities = new DesiredCapabilities();
+	desiredCapabilities.setCapability(MobileCapabilityType.PLATFORM_NAME, props.getProperty("platformName"));
+	desiredCapabilities.setCapability(MobileCapabilityType.DEVICE_NAME, props.getProperty("deviceName"));
+	desiredCapabilities.setCapability(MobileCapabilityType.AUTOMATION_NAME, props.getProperty("automationName"));
+	desiredCapabilities.setCapability(MobileCapabilityType.UDID, props.getProperty("udid"));
+	desiredCapabilities.setCapability(MobileCapabilityType.APP, props.getProperty("androidAppLocation"));
+	//desiredCapabilities.setCapability(MobileCapabilityType., props.getProperty("maxInstances"));
+
+    //desiredCapabilities.setCapability("fullReset", true);
+    //desiredCapabilities.setCapability(MobileCapabilityType.NO_RESET, true);
+
+
+
+	URL remoteUrl = new URL(props.getProperty("appiumURL"));///app/com.ippopay.store-34-apkplz.net.apk
+
+	driver=(new AndroidDriver(remoteUrl, desiredCapabilities));
+	System.out.println("Session Id: "+driver.getSessionId());
+	PageFactory.initElements(driver, BaseTest_PageObjects.class);
+	
+}
+	@AfterTest
+	public  void completeTest()
+	{
+		driver.closeApp();
+	}
+}
