@@ -1,0 +1,15 @@
+1. create Extent report
+2. create Test Listener class and add instance for Extent report [Create test log info will automatically add while start test]
+3. create Driver class [@Beforetest=driver session creation, @Aftertest=driver closing, @Beforeclass=Initiating props file]
+4. create log method for logging and extent log in any one of the baseclass ; Create new instance for TestListener
+==========================================================
+	public void log(String string) {
+		tL.test.log(Status.INFO, string);
+		log.info(string);		
+	}
+  
+  //By this, You can simply write, log("logs") to log in the other classes
+==========================================================
+	TestListener tL=new TestListener();
+==========================================================
+
