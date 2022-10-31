@@ -1,0 +1,54 @@
+package com.IppoStore.Listeners;
+
+
+
+import com.aventstack.extentreports.ExtentReports;
+import com.aventstack.extentreports.reporter.ExtentSparkReporter;
+import com.aventstack.extentreports.reporter.configuration.ExtentSparkReporterConfig;
+import com.aventstack.extentreports.reporter.configuration.Theme;
+
+public class ExtentReport {
+	
+	static ExtentSparkReporter reporter;
+
+	public static ExtentReports extentReport;
+	public static ExtentReports  getReporterObject() {
+		
+		extentReport = new ExtentReports();
+		String path=System.getProperty("user.dir")+"//reports/ExtentReportsList.html";
+		reporter = new ExtentSparkReporter(path);
+
+		extentReport.attachReporter(reporter);
+
+		reporter.config(
+				ExtentSparkReporterConfig.builder()
+				.theme(Theme.DARK)
+				.documentTitle("MyReport")
+				.build());
+
+		reporter.config().setReportName("Ippo store Automation Results");
+		reporter.config().setDocumentTitle("Test Results");
+
+		extentReport.createTest("LogLevels")
+		.info("info")
+		.pass("pass")
+		.warning("warn")
+		.skip("skip");
+		//.fail("fail");
+
+		extentReport.createTest("Author")
+		.assignAuthor("Devibala");
+
+		extentReport.setSystemInfo("Tester", "Devibala");
+
+		extentReport.createTest("Devices")
+		.assignDevice("Vivo Y21A")
+		.pass("This test 'Devices' was assigned by a special kind of devices tag.");
+		
+		return extentReport;
+
+	}
+	
+	
+	
+}
