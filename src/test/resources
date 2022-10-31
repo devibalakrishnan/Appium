@@ -1,0 +1,15 @@
+appiumURL=http://127.0.0.1:4723/wd/hub
+androidAutomationName=UiAutomator2
+androidAppPackage=com.swaglabsmobileapp
+androidAppActivity=com.swaglabsmobileapp.SplashActivity
+androidAppLocation=/Users/apple/Desktop/git/Tech_Ippopay-qks022-ippopay-store-automation-java-e29b41ccb6f2 2/src/test/resources/app/com.ippopay.store.apk
+udid=13746014520008I
+automationName=Uiautomator2
+deviceName=vivo Y21A
+platformName=Android
+maxInstances: 1
+DefaultNo=8248647995
+BaseClass_SignUp=6161616000
+WithoutEmail=7171717000
+
+
